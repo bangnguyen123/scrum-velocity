@@ -1,11 +1,10 @@
 package user
 
 import (
-	dto "backend/dtos/responses"
+	"backend/db"
 )
 
-func (userService *Service) GetUsers(user *dto.User) error {
-	user.ID = "ID"
-	user.Username = "username"
-	return nil
+func (userService *Service) GetUsers() []db.UserModel {
+	users := userService.UserRepository.GetUsers()
+	return users
 }

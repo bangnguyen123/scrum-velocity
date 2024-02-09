@@ -9,11 +9,13 @@ import (
 type Server struct {
 	Echo   *echo.Echo
 	Config *config.Config
+	DB     *config.DB
 }
 
 func NewServer(cfg *config.Config) *Server {
 	return &Server{
 		Echo:   echo.New(),
+		DB:     &cfg.DB,
 		Config: cfg,
 	}
 }

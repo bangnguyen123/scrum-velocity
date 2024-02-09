@@ -24,8 +24,7 @@ func NewUserHandler(server *s.Server) *UserHandler {
 }
 
 func (userHandler *UserHandler) GetUsers(c echo.Context) error {
-	user := new(responses.User)
-	userService := userService.NewUserService()
-	userService.GetUsers(user)
-	return responses.Response(c, http.StatusOK, user)
+	userService := userService.NewUserService(userHandler.server.DB.Ctx, userHandler.server.DB.PrismaClient)
+	users := userService.GetUsers()
+	return responses.Response(c, http.StatusOK, users)
 }
