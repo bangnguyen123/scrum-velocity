@@ -16,7 +16,7 @@ type DB struct {
 
 func connectDB(client *db.PrismaClient) error {
 	if err := client.Prisma.Connect(); err != nil {
-		return nil
+		return err
 	}
 
 	// Disconnect DB before shutting down the application
@@ -24,7 +24,6 @@ func connectDB(client *db.PrismaClient) error {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		fmt.Println("Toi dang disconnect db")
 		if err := client.Prisma.Disconnect(); err != nil {
 			panic(fmt.Errorf("could not disconnect: %w", err))
 		}
@@ -35,7 +34,9 @@ func connectDB(client *db.PrismaClient) error {
 
 func InitDB() DB {
 	client := db.NewClient()
-	connectDB(client)
+	if err := connectDB(client); err != nil {
+		panic(err)
+	}
 
 	ctx := context.Background()
 
