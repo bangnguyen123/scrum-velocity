@@ -14,9 +14,11 @@ type DB struct {
 	Ctx          context.Context
 }
 
-func connectDB(client *db.PrismaClient) error {
+func InitDB() DB {
+	client := db.NewClient()
+
 	if err := client.Prisma.Connect(); err != nil {
-		return err
+		panic(err.Error())
 	}
 
 	// Disconnect DB before shutting down the application
@@ -29,14 +31,6 @@ func connectDB(client *db.PrismaClient) error {
 		}
 		os.Exit(0)
 	}()
-	return nil
-}
-
-func InitDB() DB {
-	client := db.NewClient()
-	if err := connectDB(client); err != nil {
-		panic(err)
-	}
 
 	ctx := context.Background()
 
