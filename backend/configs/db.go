@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"backend/db"
@@ -14,23 +14,37 @@ type DB struct {
 	Ctx          context.Context
 }
 
-func InitDB() DB {
-	client := db.NewClient()
-
-	if err := client.Prisma.Connect(); err != nil {
-		panic(err.Error())
+func ConnectDB(client *db.PrismaClient) error {
+	if err := client.Connect(); err != nil {
+		return err
 	}
+	return nil
+}
 
-	// Disconnect DB before shutting down the application
-	c := make(chan os.Signal, 1)
+func DisconnectDB(c chan os.Signal, client *db.PrismaClient) error {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		if err := client.Prisma.Disconnect(); err != nil {
+		fmt.Print("tao o day roi nay")
+		if err := client.Disconnect(); err != nil {
 			panic(fmt.Errorf("could not disconnect: %w", err))
 		}
-		os.Exit(0)
 	}()
+	return nil
+}
+
+func InitDB() DB {
+	client := db.NewClient()
+
+	if err := ConnectDB(client); err != nil {
+		panic(err.Error())
+	}
+
+	c := make(chan os.Signal, 1)
+	// Disconnect DB before shutting down the application
+	if err := DisconnectDB(c, client); err != nil {
+		panic(err.Error())
+	}
 
 	ctx := context.Background()
 

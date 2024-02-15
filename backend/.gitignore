@@ -2,3 +2,7 @@ main
 
 # env
 .env
+
+# coverage report
+cover.html
+cover.out
