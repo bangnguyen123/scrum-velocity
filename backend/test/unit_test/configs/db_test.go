@@ -107,7 +107,7 @@ func TestDBConnection(t *testing.T) {
 			mockDBName := db.SetupDatabase(t)
 			setupTest.Migrate(t, db, client.Engine, mockDBName)
 
-			// defer test.Teardown(t, db, mockDBName)
+			defer test.Teardown(t, db, mockDBName)
 
 			configs.ConnectDB(client)
 
@@ -129,9 +129,7 @@ func TestDBConnection(t *testing.T) {
 				prismaDB.User.Password.Set("password"),
 			).Exec(ctx)
 
-			if err != nil {
-				t.Fatalf("fail %s", err)
-			}
+			massert.Equal(t, "request failed: client is already disconnected", err.Error())
 		},
 	}}
 	for _, tt := range tests {

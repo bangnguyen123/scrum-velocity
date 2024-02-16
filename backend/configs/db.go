@@ -21,16 +21,15 @@ func ConnectDB(client *db.PrismaClient) error {
 	return nil
 }
 
-func DisconnectDB(c chan os.Signal, client *db.PrismaClient) error {
+func DisconnectDB(c chan os.Signal, client *db.PrismaClient) {
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 	go func() {
 		<-c
-		fmt.Print("tao o day roi nay")
 		if err := client.Disconnect(); err != nil {
 			panic(fmt.Errorf("could not disconnect: %w", err))
 		}
+		// os.Exit(0)
 	}()
-	return nil
 }
 
 func InitDB() DB {
@@ -42,9 +41,7 @@ func InitDB() DB {
 
 	c := make(chan os.Signal, 1)
 	// Disconnect DB before shutting down the application
-	if err := DisconnectDB(c, client); err != nil {
-		panic(err.Error())
-	}
+	DisconnectDB(c, client)
 
 	ctx := context.Background()
 

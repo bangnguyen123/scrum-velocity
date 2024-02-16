@@ -1,6 +1,7 @@
-package app
+package main
 
 import (
+	// app "backend"
 	config "backend/configs"
 	"backend/server"
 	"backend/server/routes"
@@ -16,4 +17,10 @@ func Start(cfg *config.Config) {
 	if err != nil {
 		log.Fatal("Port is already in use")
 	}
+}
+
+func main() {
+	cfg := config.NewConfig()
+
+	Start(cfg)
 }
