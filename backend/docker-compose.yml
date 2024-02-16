@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   web:
+    container_name: backend
     build:
       context: .
       # Correct the path to your Dockerfile
