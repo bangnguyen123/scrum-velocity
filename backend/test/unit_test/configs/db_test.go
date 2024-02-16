@@ -34,7 +34,9 @@ func TestDBConnection(t *testing.T) {
 
 			defer test.Teardown(t, db, mockDBName)
 
-			configs.ConnectDB(client)
+			if err := configs.ConnectDB(client); err != nil {
+				panic(err.Error())
+			}
 
 			if err := client.Disconnect(); err != nil {
 				t.Fatalf("fail %s", err)
@@ -69,8 +71,9 @@ func TestDBConnection(t *testing.T) {
 
 			defer test.Teardown(t, db, mockDBName)
 
-			configs.ConnectDB(client)
-
+			if err := configs.ConnectDB(client); err != nil {
+				panic(err.Error())
+			}
 			_, err := client.User.CreateOne(
 				prismaDB.User.Name.Set("name"),
 				prismaDB.User.Username.Set("username"),
@@ -109,7 +112,9 @@ func TestDBConnection(t *testing.T) {
 
 			defer test.Teardown(t, db, mockDBName)
 
-			configs.ConnectDB(client)
+			if err := configs.ConnectDB(client); err != nil {
+				panic(err.Error())
+			}
 
 			signalChan := make(chan os.Signal, 1)
 			configs.DisconnectDB(signalChan, client)
